@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+
+    <style type="text/css">
+      .DraftEditor-root {
+  background: #fff;
+  border: 1px solid #ddd;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  padding: 15px;
+}
+
+.DraftEditor-editor {
+  border-top: 1px solid #ddd;
+  cursor: text;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.DraftEditor-editor .public-DraftEditorPlaceholder-root,
+.DraftEditor-editor .public-DraftEditor-content {
+  margin: 0 -15px -15px;
+  padding: 15px;
+}
+
+.DraftEditor-editor .public-DraftEditor-content {
+  min-height: 100px;
+}
+
+.DraftEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
+  display: none;
+}
+
+.DraftEditor-editor .DraftEditor-blockquote {
+  border-left: 5px solid #eee;
+  color: #666;
+  font-family: 'Hoefler Text', 'Georgia', serif;
+  font-style: italic;
+  margin: 16px 0;
+  padding: 10px 20px;
+}
+
+.DraftEditor-editor .public-DraftStyleDefault-pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-family: 'Inconsolata', 'Menlo', 'Consolas', monospace;
+  font-size: 16px;
+  padding: 20px;
+}
+
+.DraftEditor-controls {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 14px;
+  margin-bottom: 5px;
+  user-select: none;
+}
+
+.DraftEditor-styleButton {
+  color: #999;
+  cursor: pointer;
+  margin-right: 16px;
+  padding: 2px 0;
+  display: inline-block;
+}
+
+.DraftEditor-activeButton {
+  color: #5890ff;
+}
+
+    </style>
+  </head>
+  <body style="padding: 20px">
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="container"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
