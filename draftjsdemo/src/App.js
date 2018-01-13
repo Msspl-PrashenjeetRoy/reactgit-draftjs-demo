@@ -8,11 +8,10 @@ import {
   ContentState,       
 } from 'draft-js';
 
-
-
 class App extends React.Component {
   constructor(props) {
     super(props);
+
     //STATE
     // this.state = {
     //   editorState: EditorState.createEmpty(),
@@ -85,9 +84,8 @@ class App extends React.Component {
     this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, 'UNDERLINE'));
   }
 
-
-
   render() {
+    const { editorState } = this.state;
     return (
       <div>
 
@@ -113,7 +111,8 @@ class App extends React.Component {
       </div>
     );
   }
-}
+};
+
 
 
 export default App;
