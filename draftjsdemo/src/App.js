@@ -11,6 +11,8 @@ import {
   createFromBlockArray   
 } from 'draft-js';
 
+import {stateToHTML} from 'draft-js-export-html';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -69,6 +71,7 @@ class App extends React.Component {
     // console.log(editorState);
 
 
+    
 
     this.state = {
 
@@ -97,7 +100,9 @@ class App extends React.Component {
       comment_content:[],
 
 
-      get_content:''
+      get_content:'',
+
+      htmlView: ''
 
     };  
 
@@ -116,7 +121,23 @@ class App extends React.Component {
       // var raw = convertToRaw(content);//whole extra things
       var raw = JSON.stringify(convertToRaw(content)); //sending to db (json to string converted)
 
-      console.log(raw);
+      // console.log(content);
+
+      let html = stateToHTML(content);
+
+      // console.log(html);
+      // var tempDiv = document.createElement('p');
+      
+
+      // var xmlString = html
+      // var parser = new DOMParser();
+      // var doc = parser.parseFromString(html, "text/html");
+      
+      console.log(html);
+
+      this.setState({
+        htmlView: html
+      })
       // $.post('/api/comment', {comment: raw}, () => {
       //   alert('Saved');
       // });
@@ -372,6 +393,11 @@ class App extends React.Component {
         <button onClick={this.onButtonClick}>onButtonClick</button>
 
         <button onClick={this.onFetchComment}>onFetchComment</button>
+
+
+
+        <h2>View of the output</h2>
+        <div>{this.state.htmlView}</div>
       </div>
     );
   }

@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "draft-js": "^0.10.4",
+    "draft-js-export-html": "^1.2.0",
     "es6-shim": "^0.35.3",
-    "medium-draft": "^0.5.6",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-scripts": "1.0.17"
