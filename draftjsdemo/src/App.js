@@ -77,7 +77,7 @@ class App extends React.Component {
 
       //loaded editor with database data or static data
       editorState: EditorState.createWithContent(blockArray),
-      // editorState: EditorState.createEmpty(),//for empty editor
+      editorState2: EditorState.createWithContent(blockArray),//for empty editor
       welcomeTxt: 'Hi welcome to react!',
       textValue:'',
       error: null,
@@ -102,7 +102,11 @@ class App extends React.Component {
 
       get_content:'',
 
-      htmlView: ''
+      htmlView: [],
+
+      description: [
+        {htmlopen:null}
+      ],
 
     };  
 
@@ -115,36 +119,50 @@ class App extends React.Component {
 
     this.logState = () => console.log(this.state.editorState.toJS());
 
-    //ON SAVE STRING/JSON SAVE
-    this.onSave = () => {
-      var content = this.state.editorState.getCurrentContent();
-      // var raw = convertToRaw(content);//whole extra things
-      var raw = JSON.stringify(convertToRaw(content)); //sending to db (json to string converted)
-
-      // console.log(content);
-
-      let html = stateToHTML(content);
-
-      // console.log(html);
-      // var tempDiv = document.createElement('p');
-      
-
-      // var xmlString = html
-      // var parser = new DOMParser();
-      // var doc = parser.parseFromString(html, "text/html");
-      
-      console.log(html);
-
-      this.setState({
-        htmlView: html
-      })
-      // $.post('/api/comment', {comment: raw}, () => {
-      //   alert('Saved');
-      // });
-    };
+    
 
     
   }
+
+  htmlDecode(input){
+    var e = document.createElement('div');
+    e.innerHTML = input;
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+  }
+
+  //ON SAVE STRING/JSON SAVE
+  onSave = () => {
+    var content = this.state.editorState.getCurrentContent();
+    // var raw = convertToRaw(content);//whole extra things
+    var raw = JSON.stringify(convertToRaw(content)); //sending to db (json to string converted)
+
+    // console.log(content);
+
+    let html = stateToHTML(content);
+
+    // console.log(html);
+    // var tempDiv = document.createElement('p');
+    
+
+    // var xmlString = html
+    // var parser = new DOMParser();
+    // var doc = parser.parseFromString(html, "text/html");
+    
+    console.log(html);
+    // console.log(this.state.htmlView);
+    // let htmlarray = this.state.htmlView;
+    // console.log(htmlarray.push(html));
+    // console.log(htmlarray[0])
+
+
+
+    this.setState({
+      htmlView: html
+    })
+    // $.post('/api/comment', {comment: raw}, () => {
+    //   alert('Saved');
+    // });
+  };
 
   postCommentFun = () => {
     let self = this;
@@ -396,8 +414,19 @@ class App extends React.Component {
 
 
 
-        <h2>View of the output</h2>
+        <h2>View of the html string (it will work when save button click)</h2>
         <div>{this.state.htmlView}</div>
+
+
+
+
+        <h2>View of the editor read only mode</h2>
+
+        {/*view article page: read only mode*/}
+        <Editor
+          editorState={this.state.editorState2}
+          readOnly
+        />
       </div>
     );
   }
