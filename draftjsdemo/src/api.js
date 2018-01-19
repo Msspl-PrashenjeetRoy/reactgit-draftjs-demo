@@ -3,8 +3,8 @@ import  Environment  from './environment';
 // get api url
 // var url               = Environment.BASE_URL;
 var url_node          = Environment.BASE_URL_NODE;
-var clientCredentials = Environment.CLIENT_CREDENTIALSDETAILS;
-var oathaccesstoken   = Environment.CLIENT_OATHACCESSTOKEN;
+// var clientCredentials = Environment.CLIENT_CREDENTIALSDETAILS;
+// var oathaccesstoken   = Environment.CLIENT_OATHACCESSTOKEN;
 
 class Api {
   static headerParams = { 'Accept': 'application/json', 'content-type': 'application/x-www-form-urlencoded', 'Access-Control-Allow-Origin': 'https://developer.mozilla.org' };
