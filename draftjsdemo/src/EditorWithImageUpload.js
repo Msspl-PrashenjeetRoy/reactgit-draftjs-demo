@@ -13,7 +13,7 @@ import {
 //converting state to html
 import {stateToHTML} from 'draft-js-export-html';
 import editorStyles from "./index.css";
-
+const url = require('./media.png');
 
 const initialState = {
   entityMap: {
@@ -55,82 +55,84 @@ const initialState = {
   ]
 };
 
-function mediaBlockRenderer(block) {
-        if (block.getType() === 'atomic') {
-          return {
-            component: Media,
-            editable: false,
-          };
-        }
 
-        return null;
-      }
+const styles = {
+  root: {
+    fontFamily: '\'Georgia\', serif',
+    padding: 20,
+    width: 600,
+  },
+  buttons: {
+    marginBottom: 10,
+  },
+  urlInputContainer: {
+    marginBottom: 10,
+  },
+  urlInput: {
+    fontFamily: '\'Georgia\', serif',
+    marginRight: 10,
+    padding: 3,
+  },
+  editor: {
+    border: '1px solid #ccc',
+    cursor: 'text',
+    minHeight: 80,
+    padding: 10,
+  },
+  button: {
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  media: {
+    width: '100%',
+    // Fix an issue with Firefox rendering video controls
+    // with 'pre-wrap' white-space
+    whiteSpace: 'initial'
+  },
+};
 
-      const Audio = (props) => {
-        return <audio controls src={props.src} style={styles.media} />;
-      };
 
-      const Image = (props) => {
-        return <img src={props.src} style={styles.media} />;
-      };
+function mediaBlockRenderer(block){
+  if (block.getType() === 'atomic') {
+    return {
+      component: Media,
+      editable: false,
+    };
+  }
 
-      const Video = (props) => {
-        return <video controls src={props.src} style={styles.media} />;
-      };
+  return null;
+}
 
-      const Media = (props) => {
-        const entity = props.contentState.getEntity(
-          props.block.getEntityAt(0)
-        );
-        const {src} = entity.getData();
-        const type = entity.getType();
+const Audio = (props) => {
+    return <audio controls src={props.src} style={styles.media} />;
+  };
 
-        let media;
-        if (type === 'audio') {
-          media = <Audio src={src} />;
-        } else if (type === 'image') {
-          media = <Image src={src} />;
-        } else if (type === 'video') {
-          media = <Video src={src} />;
-        }
+const Image = (props) => {
+  return <img src={props.src} style={styles.media} />;
+};
 
-        return media;
-      };
+const Video = (props) => {
+  return <video controls src={props.src} style={styles.media} />;
+};
 
-      const styles = {
-        root: {
-          fontFamily: '\'Georgia\', serif',
-          padding: 20,
-          width: 600,
-        },
-        buttons: {
-          marginBottom: 10,
-        },
-        urlInputContainer: {
-          marginBottom: 10,
-        },
-        urlInput: {
-          fontFamily: '\'Georgia\', serif',
-          marginRight: 10,
-          padding: 3,
-        },
-        editor: {
-          border: '1px solid #ccc',
-          cursor: 'text',
-          minHeight: 80,
-          padding: 10,
-        },
-        button: {
-          marginTop: 10,
-          textAlign: 'center',
-        },
-        media: {
-          width: '100%',
-          // Fix an issue with Firefox rendering video controls
-          // with 'pre-wrap' white-space
-          whiteSpace: 'initial'
-        },
-      };
+const Media = (props) => {
+  const entity = props.contentState.getEntity(
+    props.block.getEntityAt(0)
+  );
+  const {src} = entity.getData();
+  const type = entity.getType();
+
+  let media;
+  if (type === 'audio') {
+    media = <Audio src={src} />;
+  } else if (type === 'image') {
+    media = <Image src={src} />;
+  } else if (type === 'video') {
+    media = <Video src={src} />;
+  }
+
+  return media;
+};   
 
 //main app class
 export default class EditorWithImageUpload extends React.Component {
@@ -140,7 +142,8 @@ export default class EditorWithImageUpload extends React.Component {
 
     // STATE
     this.state = {
-      editorState: EditorState.createWithContent(convertFromRaw(initialState)),
+      editorState: EditorState.createEmpty(),
+      // editorState: EditorState.createWithContent(convertFromRaw(initialState)),
       urlValue: '',
       urlType:''
     }; 
@@ -157,10 +160,10 @@ export default class EditorWithImageUpload extends React.Component {
 
     //loging editor state as json with toJS
     this.logState = () => console.log(this.state.editorState.toJS());
-    this._confirmMedia = this._confirmMedia.bind(this);
+    // this._confirmMedia = this._confirmMedia.bind(this);
+    // this.MediaBlockRenderer = this.MediaBlockRenderer.bind(this);
     
   }
-
 
   //ON SAVE STRING/JSON SAVE
   onSave = () => {
@@ -223,8 +226,8 @@ export default class EditorWithImageUpload extends React.Component {
     evt.preventDefault();
     let self = this;
 
-    var file = evt.target.files[0];
-    var urlfrom = evt.target.value;
+    // var file = evt.target.files[0];
+    // var urlfrom = evt.target.value;
     // console.log('urlfrom');
     // console.log(urlfrom);
     // console.log(file);
@@ -234,48 +237,53 @@ export default class EditorWithImageUpload extends React.Component {
     // console.log('==url==');
     // console.log(urlfrom);
      
-     var reader = new FileReader();
+     // var reader = new FileReader();
      // console.log(reader);
-    reader.readAsDataURL(file);
-      
-    reader.onload = function (e) {
-      // console.log(e.target.result);
-      // console.log(file.type);
-      // self.setState({
-      //   urlValue: e.target.result,
-      //   urlType: file.type
-      // },()=>{
-      //   self._confirmMedia();
-      // })
-      // console.log(self.state.urlValue);
-      // console.log(self.state.urlType);
-       // console.log(reader.result);
+    // reader.readAsDataURL(file);
 
-        const {editorState, urlValue, urlType} = self.state;
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-          'image',
-          'IMMUTABLE',
-          {src: '/Users/appsdeveloper/draft-js/examples/draft-0-10-0/media/media.png'}
-        );
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(
-          editorState,
-          {currentContent: contentStateWithEntity}
-        );
+      const {editorState, urlValue, urlType} = self.state;
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'image',
+        'IMMUTABLE',
+        {src: url}
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+      const newEditorState = EditorState.set(
+        editorState,
+        {currentContent: contentStateWithEntity}
+      );
 
-        self.setState({
-          editorState: AtomicBlockUtils.insertAtomicBlock(
-            newEditorState,
-            entityKey,
-            ' '
-          ),
-          showURLInput: false,
-          urlValue: '',
-        }, () => {
-          setTimeout(() => self.focus(), 0);
-        });
-     };
+      self.setState({
+        editorState: AtomicBlockUtils.insertAtomicBlock(
+          newEditorState,
+          entityKey,
+          ' '
+        ),
+        showURLInput: false,
+        urlValue: '',
+      }, () => {
+        setTimeout(() => self.focus(), 0);
+      });
+    // reader.onload = function (e) {
+
+
+    //   // console.log(e.target.result);
+    //   // console.log(file.type);
+    //   // self.setState({
+    //   //   urlValue: e.target.result,
+    //   //   urlType: file.type
+    //   // },()=>{
+    //   //   // self._confirmMedia();
+
+        
+    //   // })
+    //   // console.log(self.state.urlValue);
+    //   // console.log(self.state.urlType);
+    //    // console.log(reader.result);
+
+        
+    //  };
 
      
 
@@ -283,34 +291,34 @@ export default class EditorWithImageUpload extends React.Component {
      // console.log(self.state.urlType);
   }
 
-  _confirmMedia(e) {
-    // let self = this;
-      // e.preventDefault();
-      const {editorState, urlValue, urlType} = this.state;
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-          'PHOTO',
-          'IMMUTABLE',
-          {src: '/Users/appsdeveloper/draft-js/examples/draft-0-10-0/media/media.png'}
-        );
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(
-          editorState,
-          {currentContent: contentStateWithEntity}
-        );
+  // _confirmMedia(e) {
+  //   // let self = this;
+  //     // e.preventDefault();
+  //     const {editorState, urlValue, urlType} = this.state;
+  //       const contentState = editorState.getCurrentContent();
+  //       const contentStateWithEntity = contentState.createEntity(
+  //         'PHOTO',
+  //         'IMMUTABLE',
+  //         {src: '/Users/appsdeveloper/draft-js/examples/draft-0-10-0/media/media.png'}
+  //       );
+  //       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+  //       const newEditorState = EditorState.set(
+  //         editorState,
+  //         {currentContent: contentStateWithEntity}
+  //       );
 
-        this.setState({
-          editorState: AtomicBlockUtils.insertAtomicBlock(
-            newEditorState,
-            entityKey,
-            ' '
-          ),
-          showURLInput: false,
-          urlValue: '',
-        }, () => {
-          setTimeout(() => this.focus(), 0);
-        });
-    }
+  //       this.setState({
+  //         editorState: AtomicBlockUtils.insertAtomicBlock(
+  //           newEditorState,
+  //           entityKey,
+  //           ' '
+  //         ),
+  //         showURLInput: false,
+  //         urlValue: '',
+  //       }, () => {
+  //         setTimeout(() => this.focus(), 0);
+  //       });
+  //   }
 
 //   function getBase64(file) {
 //    var reader = new FileReader();
@@ -323,15 +331,20 @@ export default class EditorWithImageUpload extends React.Component {
 //    };
 // }
 
+  
+
 
   render() {
+
+
+  // console.log(url);
     return (
       <div>
         <h1>EditorWithImageUpload</h1>
         
-        <input type="file" onChange={(evt)=> this.addImage(evt)}/>
+        {/*<input type="file" onChange={(evt)=> this.addImage(evt)}/>*/}
 
-        <button onClick={this._confirmMedia}>loooooad</button>
+        <button onClick={(evt)=> this.addImage(evt)}>loooooad</button>
 
         <div className={editorStyles.editor} onClick={this.focus}>
           <Editor
