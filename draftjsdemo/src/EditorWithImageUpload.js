@@ -1,13 +1,14 @@
+/*
+  - uploading image to editor
+  - image from filereader
+  - base64 converted
+*/
 import React from 'react';
 import {
   Editor, 
   EditorState, 
   RichUtils,
   AtomicBlockUtils,
-  convertToRaw,
-  createWidthContent,
-  convertFromRaw,
-  createWithContent
 } from 'draft-js';
 
 //converting state to html
@@ -15,6 +16,8 @@ import {stateToHTML} from 'draft-js-export-html';
 import editorStyles from "./index.css";
 const url = require('./media.png');
 
+
+//Not using now: (initial state for static upload all the content and image with it)
 const initialState = {
   entityMap: {
     "0": {
@@ -56,6 +59,7 @@ const initialState = {
 };
 
 
+//it's used for styling image customBlock
 const styles = {
   root: {
     fontFamily: '\'Georgia\', serif',
@@ -91,7 +95,7 @@ const styles = {
   },
 };
 
-
+//if the block type is atomic it render component with editable property
 function mediaBlockRenderer(block){
   if (block.getType() === 'atomic') {
     return {
@@ -103,19 +107,25 @@ function mediaBlockRenderer(block){
   return null;
 }
 
+//autio structure
 const Audio = (props) => {
     return <audio controls src={props.src} style={styles.media} />;
   };
 
+//Image structure
 const Image = (props) => {
   return <img src={props.src} style={styles.media} />;
 };
 
+
+//Video structure
 const Video = (props) => {
   return <video controls src={props.src} style={styles.media} />;
 };
 
+//the component for media
 const Media = (props) => {
+
   const entity = props.contentState.getEntity(
     props.block.getEntityAt(0)
   );
@@ -160,9 +170,8 @@ export default class EditorWithImageUpload extends React.Component {
 
     //loging editor state as json with toJS
     this.logState = () => console.log(this.state.editorState.toJS());
-    // this._confirmMedia = this._confirmMedia.bind(this);
-    // this.MediaBlockRenderer = this.MediaBlockRenderer.bind(this);
     
+    this._confirmMedia =  this._confirmMedia.bind(this);
   }
 
   //ON SAVE STRING/JSON SAVE
@@ -189,45 +198,12 @@ export default class EditorWithImageUpload extends React.Component {
   }
 
 
-      
-
-  // getBase64 = (_file, _urlfrom) => {
-  //   console.log(_file);
-  //   console.log('==file.type==');
-  //   console.log(_file.type);
-
-  //   console.log('==url==');
-  //   console.log(_urlfrom);
-     
-  //    var reader = new FileReader();
-     
-  //    // console.log('====reader====');
-  //    // console.log(reader);
-
-     
-  //   //  reader.onload = function(upload) {
-  //   //     // console.log(upload);
-  //   //     // console.log(reader.readAsDataURL(_file));
-  //   // };
-
-  //   reader.readAsDataURL(_file);
-
-  //   // console.log(reader.readAsDataURL(_file));
-
-  //    reader.onload = function () {
-  //      console.log(reader.result);
-  //    };
-  //    // reader.onerror = function (error) {
-  //    //   console.log('Error: ', error);
-  //    // };
-  // }
-
   addImage = (evt) => {
     evt.preventDefault();
     let self = this;
 
-    // var file = evt.target.files[0];
-    // var urlfrom = evt.target.value;
+    var file = evt.target.files[0];
+    var urlfrom = evt.target.value;
     // console.log('urlfrom');
     // console.log(urlfrom);
     // console.log(file);
@@ -237,114 +213,59 @@ export default class EditorWithImageUpload extends React.Component {
     // console.log('==url==');
     // console.log(urlfrom);
      
-     // var reader = new FileReader();
+     var reader = new FileReader();
      // console.log(reader);
-    // reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
 
-      const {editorState, urlValue, urlType} = self.state;
-      const contentState = editorState.getCurrentContent();
-      const contentStateWithEntity = contentState.createEntity(
-        'image',
-        'IMMUTABLE',
-        {src: url}
-      );
-      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-      const newEditorState = EditorState.set(
-        editorState,
-        {currentContent: contentStateWithEntity}
-      );
-
+    reader.onload = function (e) {
+      // console.log(e.target.result);
       self.setState({
-        editorState: AtomicBlockUtils.insertAtomicBlock(
-          newEditorState,
-          entityKey,
-          ' '
-        ),
-        showURLInput: false,
-        urlValue: '',
-      }, () => {
-        setTimeout(() => self.focus(), 0);
-      });
-    // reader.onload = function (e) {
-
-
-    //   // console.log(e.target.result);
-    //   // console.log(file.type);
-    //   // self.setState({
-    //   //   urlValue: e.target.result,
-    //   //   urlType: file.type
-    //   // },()=>{
-    //   //   // self._confirmMedia();
-
+        urlValue: e.target.result,
+      },()=>{
+        // console.log('hello')
+        self._confirmMedia();
+      })
         
-    //   // })
-    //   // console.log(self.state.urlValue);
-    //   // console.log(self.state.urlType);
-    //    // console.log(reader.result);
-
-        
-    //  };
-
-     
-
-     // console.log(self.state.urlValue);
-     // console.log(self.state.urlType);
+     };
   }
 
-  // _confirmMedia(e) {
-  //   // let self = this;
-  //     // e.preventDefault();
-  //     const {editorState, urlValue, urlType} = this.state;
-  //       const contentState = editorState.getCurrentContent();
-  //       const contentStateWithEntity = contentState.createEntity(
-  //         'PHOTO',
-  //         'IMMUTABLE',
-  //         {src: '/Users/appsdeveloper/draft-js/examples/draft-0-10-0/media/media.png'}
-  //       );
-  //       const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-  //       const newEditorState = EditorState.set(
-  //         editorState,
-  //         {currentContent: contentStateWithEntity}
-  //       );
 
-  //       this.setState({
-  //         editorState: AtomicBlockUtils.insertAtomicBlock(
-  //           newEditorState,
-  //           entityKey,
-  //           ' '
-  //         ),
-  //         showURLInput: false,
-  //         urlValue: '',
-  //       }, () => {
-  //         setTimeout(() => this.focus(), 0);
-  //       });
-  //   }
+  _confirmMedia(e){
+        let self = this;
+        const {editorState, urlValue, urlType} = self.state;
+        const contentState = editorState.getCurrentContent();
+        const contentStateWithEntity = contentState.createEntity(
+          'image',//urlType
+          'IMMUTABLE',//available options- MUTABLE
+          {src: urlValue} //url source
+        );
+        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+        const newEditorState = EditorState.set(
+          editorState,
+          {currentContent: contentStateWithEntity}
+        );
 
-//   function getBase64(file) {
-//    var reader = new FileReader();
-//    reader.readAsDataURL(file);
-//    reader.onload = function () {
-//      console.log(reader.result);
-//    };
-//    reader.onerror = function (error) {
-//      console.log('Error: ', error);
-//    };
-// }
-
+        self.setState({
+          editorState: AtomicBlockUtils.insertAtomicBlock(
+            newEditorState,
+            entityKey,
+            ' '
+          ),
+          showURLInput: false,
+          urlValue: '',
+        }, () => {
+          setTimeout(() => self.focus(), 0);
+        });
+  }
   
-
-
   render() {
-
-
-  // console.log(url);
     return (
       <div>
         <h1>EditorWithImageUpload</h1>
         
-        {/*<input type="file" onChange={(evt)=> this.addImage(evt)}/>*/}
+        <input type="file" multiple onChange={(evt)=> this.addImage(evt)}/>
 
-        <button onClick={(evt)=> this.addImage(evt)}>loooooad</button>
+       {/* <button onClick={(evt)=> this.addImage(evt)}>Upload Image from Local machine</button>*/}
 
         <div className={editorStyles.editor} onClick={this.focus}>
           <Editor
@@ -359,11 +280,9 @@ export default class EditorWithImageUpload extends React.Component {
 
         <button onClick={this.logState}>Log State</button> 
 
-        <button onClick={this.onSave}>Save</button>
+        <button onClick={this.onSave}>Save (see console)</button>
 
         
-
-
       </div>
     );
   }
