@@ -212,7 +212,8 @@ export default class EditorWithImageUpload extends React.Component {
 
     // console.log('==url==');
     // console.log(urlfrom);
-     
+    
+    // console.log(evt.target.files);
      var reader = new FileReader();
      // console.log(reader);
     reader.readAsDataURL(file);
@@ -224,6 +225,7 @@ export default class EditorWithImageUpload extends React.Component {
       },()=>{
         // console.log('hello')
         self._confirmMedia();
+        e.target.value = null;
       })
         
      };
@@ -231,6 +233,7 @@ export default class EditorWithImageUpload extends React.Component {
 
 
   _confirmMedia(e){
+
         let self = this;
         const {editorState, urlValue, urlType} = self.state;
         const contentState = editorState.getCurrentContent();
@@ -255,6 +258,8 @@ export default class EditorWithImageUpload extends React.Component {
           urlValue: '',
         }, () => {
           setTimeout(() => self.focus(), 0);
+
+
         });
   }
   
@@ -263,7 +268,7 @@ export default class EditorWithImageUpload extends React.Component {
       <div>
         <h1>EditorWithImageUpload</h1>
         
-        <input type="file" multiple onChange={(evt)=> this.addImage(evt)}/>
+        <input type="file" onChange={this.addImage} value="" multiple />
 
        {/* <button onClick={(evt)=> this.addImage(evt)}>Upload Image from Local machine</button>*/}
 
