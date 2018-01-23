@@ -201,93 +201,87 @@ export default class EditorWithImageUpload extends React.Component {
   addImage = (evt) => {
     evt.preventDefault();
     let self = this;
+    var filess = evt.target.files;
+    var fileLength = evt.target.files.length;
 
-    var file = evt.target.files[0];
-    var urlfrom = evt.target.value;
-    // console.log('urlfrom');
-    // console.log(urlfrom);
-    // console.log(file);
-    // console.log('==file.type==');
-    // console.log(file.type);
+    if (filess.length == 0) {
+      console.log("Select one or more files.");
 
-    // console.log('==url==');
-    // console.log(urlfrom);
-    
-    // console.log(evt.target.files);
-     var reader = new FileReader();
-     // console.log(reader);
-    reader.readAsDataURL(file);
+    } else {
+      for (var i = 0; i < filess.length; i++) {
 
-    reader.onload = function (e) {
-      // console.log(e.target.result);
-      self.setState({
-        urlValue: e.target.result,
-      },()=>{
-        // console.log('hello')
-        self._confirmMedia();
-        e.target.value = null;
-      })
-        
-     };
+        var dataURLParam  = filess[i];
+        var reader = new FileReader();
+
+        reader.addEventListener('load',function(event){
+          self.setState({
+            urlValue: event.target.result,
+          },()=>{
+            self._confirmMedia();
+            event.target.value = null;
+          });
+        });
+
+        if(dataURLParam){
+          //Read the image
+          reader.readAsDataURL(dataURLParam);
+        }
+      }
+    }
   }
 
-
   _confirmMedia(e){
+    let self = this;
+    const {editorState, urlValue, urlType} = self.state;
+    const contentState = editorState.getCurrentContent();
+    const contentStateWithEntity = contentState.createEntity(
+      'image',//urlType
+      'IMMUTABLE',//available options- MUTABLE
+      {src: urlValue} //url source
+    );
 
-        let self = this;
-        const {editorState, urlValue, urlType} = self.state;
-        const contentState = editorState.getCurrentContent();
-        const contentStateWithEntity = contentState.createEntity(
-          'image',//urlType
-          'IMMUTABLE',//available options- MUTABLE
-          {src: urlValue} //url source
-        );
-        const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
-        const newEditorState = EditorState.set(
-          editorState,
-          {currentContent: contentStateWithEntity}
-        );
+    const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+    const newEditorState = EditorState.set(
+      editorState,
+      {currentContent: contentStateWithEntity}
+    );
 
-        self.setState({
-          editorState: AtomicBlockUtils.insertAtomicBlock(
-            newEditorState,
-            entityKey,
-            ' '
-          ),
-          showURLInput: false,
-          urlValue: '',
-        }, () => {
-          setTimeout(() => self.focus(), 0);
-
-
-        });
+    self.setState({
+      editorState: AtomicBlockUtils.insertAtomicBlock(
+        newEditorState,
+        entityKey,
+        ' '
+      ),
+      showURLInput: false,
+      // urlValue: '',
+    }, () => {
+      setTimeout(() => self.focus(), 0);
+    });
   }
   
   render() {
     return (
       <div>
         <h1>EditorWithImageUpload</h1>
-        
-        <input type="file" onChange={this.addImage} value="" multiple />
-
+        <input type="file" multiple size="20" />
+        <form method="post" encType="multipart/form-data">
+          <input type="file" onChange={this.addImage} multiple size="20" value="" />
+        </form>
        {/* <button onClick={(evt)=> this.addImage(evt)}>Upload Image from Local machine</button>*/}
-
+      
         <div className={editorStyles.editor} onClick={this.focus}>
           <Editor
-              blockRendererFn={mediaBlockRenderer}
-              editorState={this.state.editorState}
-              handleKeyCommand={this.handleKeyCommand}
-              onChange={this.onChange}
-              placeholder="Enter some text..."
-              ref="editor"
-            />
+            blockRendererFn={mediaBlockRenderer}
+            editorState={this.state.editorState}
+            handleKeyCommand={this.handleKeyCommand}
+            onChange={this.onChange}
+            placeholder="Enter some text..."
+            ref="editor"
+          />
         </div>
 
         <button onClick={this.logState}>Log State</button> 
-
         <button onClick={this.onSave}>Save (see console)</button>
-
-        
       </div>
     );
   }
