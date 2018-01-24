@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 
 // example modules by pj
@@ -9,11 +10,11 @@ import React from 'react';
 import EditorWithImageUpload from './EditorWithImageUpload';
 
 //main app class
-class App extends React.Component {
+class App extends React.Component<void>  {
   render() {
     return (
       <div>
-        <EditorWithImageUpload/>
+      <EditorWithImageUpload/>
       </div>
     );
   }

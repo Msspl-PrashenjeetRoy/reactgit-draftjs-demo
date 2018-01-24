@@ -1,3 +1,4 @@
+// @flow
 /*
   - uploading image to editor
   - image from filereader
@@ -263,10 +264,11 @@ export default class EditorWithImageUpload extends React.Component {
     return (
       <div>
         <h1>EditorWithImageUpload</h1>
-        <input type="file" multiple size="20" />
+
         <form method="post" encType="multipart/form-data">
           <input type="file" onChange={this.addImage} multiple size="20" value="" />
         </form>
+        
        {/* <button onClick={(evt)=> this.addImage(evt)}>Upload Image from Local machine</button>*/}
       
         <div className={editorStyles.editor} onClick={this.focus}>
